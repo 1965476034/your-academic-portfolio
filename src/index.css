@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* SWJTU official styling palette */
+  --color-swjtu-blue: #003B90;
+  --color-swjtu-blue-light: #1A5CBF;
+  --color-swjtu-red: #C8102E;
+  --color-swjtu-gold: #D4AF37;
+  --color-slate-background: #F8FAFC;
+}
+
+/* Custom CSS Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-slate-background);
+  color: #1E293B;
+  font-family: var(--font-sans);
+}
+
+/* Micro-transition effects */
+.hover-scale {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hover-scale:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 59, 144, 0.1), 0 8px 10px -6px rgba(0, 59, 144, 0.1);
+}
+
+/* Academic stamp styling for certificate verification */
+.academic-stamp {
+  width: 90px;
+  height: 90px;
+  border: 2px dashed rgba(200, 16, 46, 0.65);
+  border-radius: 50%;
+  color: #C8102E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 11px;
+  line-height: normal;
+  text-align: center;
+  transform: rotate(-12deg);
+  user-select: none;
+}
+
+.glow-selected {
+  position: relative;
+}
+.glow-selected::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #003B90, #C8102E);
+  z-index: -1;
+  opacity: 0.75;
+  filter: blur(4px);
+}
