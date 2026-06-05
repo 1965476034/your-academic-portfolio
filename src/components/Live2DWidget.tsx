@@ -30,7 +30,19 @@ const DIALOG_QUOTES = [
 ];
 
 export const Live2DWidget: React.FC = () => {
-  const [activeModelIdx, setActiveModelIdx] = useState(0);
+  // Read initial model index from localStorage to persist model choice across reloads
+  const getInitialModelIdx = (): number => {
+    const saved = localStorage.getItem('live2d-model-idx');
+    if (saved) {
+      const idx = parseInt(saved, 10);
+      if (!isNaN(idx) && idx >= 0 && idx < MODELS.length) {
+        return idx;
+      }
+    }
+    return 0;
+  };
+
+  const [activeModelIdx] = useState<number>(getInitialModelIdx());
   const [dialogText, setDialogText] = useState('你好呀！我是小春~ 欢迎来到黄璨的学术主页！');
   const [showDialog, setShowDialog] = useState(true);
   const [isVisible, setIsVisible] = useState(true);
@@ -41,28 +53,28 @@ export const Live2DWidget: React.FC = () => {
   useEffect(() => {
     if (!isVisible) return;
 
-    // 1. Clean up any existing instances/globals/scripts to force a clean re-init
-    delete (window as any).L2Dwidget;
-    const oldScript = document.getElementById('live2d-script');
-    if (oldScript) {
-      oldScript.remove();
-    }
+    // Remove any leftover widget DOM container to avoid duplicates
     removeWidgetDOM();
 
-    // 2. Load script from CDN
-    const script = document.createElement('script');
-    script.id = 'live2d-script';
-    script.src = 'https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js';
-    script.async = true;
-    script.onload = () => {
+    // 1. Check if L2Dwidget script is already loaded
+    if (window.L2Dwidget) {
       initWidget(activeModelIdx);
-    };
-    script.onerror = () => {
-      console.error('Failed to load Live2D widget script.');
-    };
-    document.body.appendChild(script);
+    } else {
+      // 2. Load script dynamically from CDN
+      const script = document.createElement('script');
+      script.id = 'live2d-script';
+      script.src = 'https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js';
+      script.async = true;
+      script.onload = () => {
+        initWidget(activeModelIdx);
+      };
+      script.onerror = () => {
+        console.error('Failed to load Live2D widget script.');
+      };
+      document.body.appendChild(script);
+    }
 
-    // 3. Set a periodic timer to make it feel alive
+    // 3. Set a periodic timer to change quotes and make it feel alive
     const interval = setInterval(() => {
       const randomIdx = Math.floor(Math.random() * DIALOG_QUOTES.length);
       setDialogText(DIALOG_QUOTES[randomIdx]);
@@ -77,10 +89,8 @@ export const Live2DWidget: React.FC = () => {
       clearInterval(interval);
       if (timerRef.current) clearTimeout(timerRef.current);
       removeWidgetDOM();
-      const s = document.getElementById('live2d-script');
-      if (s) s.remove();
     };
-  }, [isVisible, activeModelIdx]);
+  }, [isVisible]);
 
   const removeWidgetDOM = () => {
     const widgetContainer = document.getElementById('live2d-widget');
@@ -104,7 +114,7 @@ export const Live2DWidget: React.FC = () => {
           vOffset: 20,
         },
         mobile: {
-          show: false, // Hidden on mobile to avoid blocking content
+          show: false, // Hidden on mobile to avoid blocking layout/content
         },
         react: {
           opacity: 0.95,
@@ -112,7 +122,7 @@ export const Live2DWidget: React.FC = () => {
         log: false,
       });
 
-      // Attach click listener to the Live2D canvas after initialized
+      // Attach click/hover listeners to the Live2D canvas once fully mounted
       setTimeout(() => {
         const canvas = document.getElementById('live2dcanvas');
         if (canvas) {
@@ -147,16 +157,16 @@ export const Live2DWidget: React.FC = () => {
 
   const handleSwitchModel = () => {
     const nextIdx = (activeModelIdx + 1) % MODELS.length;
-    // Updating index triggers the useEffect hook to completely reload and re-render the new model
-    setActiveModelIdx(nextIdx);
+    // Save selection in localStorage and reload page to prevent WebGL conflicts
+    localStorage.setItem('live2d-model-idx', nextIdx.toString());
 
-    setDialogText(`一键变装！已为您唤醒新角色：${MODELS[nextIdx].name}。${MODELS[nextIdx].desc}`);
+    setDialogText(`一键变装！正在为您唤醒新角色：${MODELS[nextIdx].name}...`);
     setShowDialog(true);
 
     if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      setShowDialog(false);
-    }, 7000);
+    setTimeout(() => {
+      window.location.reload();
+    }, 800);
   };
 
   const handleInteract = () => {
