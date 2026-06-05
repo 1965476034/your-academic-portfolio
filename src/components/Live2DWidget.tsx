@@ -1,19 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { RefreshCw, MessageSquare, Camera, EyeOff, Eye, Sparkles } from 'lucide-react';
+import { MessageSquare, Camera, EyeOff, Eye, Sparkles } from 'lucide-react';
 
 declare global {
   interface Window {
     L2Dwidget: any;
   }
 }
-
-const MODELS = [
-  { name: '小春 (Koharu)', path: 'https://cdn.jsdelivr.net/npm/live2d-widget-model-koharu@1.0.5/assets/koharu.model.json', desc: '超可爱的 Q 版萌妹，最喜欢和人打交道了~' },
-  { name: '初音未来 (Miku)', path: 'https://cdn.jsdelivr.net/npm/live2d-widget-model-miku@1.0.5/assets/miku.model.json', desc: '世界第一公主殿下，歌声超级甜美！' },
-  { name: '汐月 (Shizuku)', path: 'https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json', desc: '端庄稳重的经典制服少女学姐~' },
-  { name: '小猫 (Tororo)', path: 'https://cdn.jsdelivr.net/npm/live2d-widget-model-tororo@1.0.5/assets/tororo.model.json', desc: '软乎乎的呆萌小白猫，会动耳朵和尾巴哦！' },
-  { name: '黑猫 (Hijiki)', path: 'https://cdn.jsdelivr.net/npm/live2d-widget-model-hijiki@1.0.5/assets/hijiki.model.json', desc: '充满灵气的小黑猫，非常乖巧~' }
-];
 
 const DIALOG_QUOTES = [
   '哎呀！别戳人家啦~ ( > < )',
@@ -30,19 +22,6 @@ const DIALOG_QUOTES = [
 ];
 
 export const Live2DWidget: React.FC = () => {
-  // Read initial model index from localStorage to persist model choice across reloads
-  const getInitialModelIdx = (): number => {
-    const saved = localStorage.getItem('live2d-model-idx');
-    if (saved) {
-      const idx = parseInt(saved, 10);
-      if (!isNaN(idx) && idx >= 0 && idx < MODELS.length) {
-        return idx;
-      }
-    }
-    return 0;
-  };
-
-  const [activeModelIdx] = useState<number>(getInitialModelIdx());
   const [dialogText, setDialogText] = useState('你好呀！我是小春~ 欢迎来到黄璨的学术主页！');
   const [showDialog, setShowDialog] = useState(true);
   const [isVisible, setIsVisible] = useState(true);
@@ -58,7 +37,7 @@ export const Live2DWidget: React.FC = () => {
 
     // 1. Check if L2Dwidget script is already loaded
     if (window.L2Dwidget) {
-      initWidget(activeModelIdx);
+      initWidget();
     } else {
       // 2. Load script dynamically from CDN
       const script = document.createElement('script');
@@ -66,7 +45,7 @@ export const Live2DWidget: React.FC = () => {
       script.src = 'https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js';
       script.async = true;
       script.onload = () => {
-        initWidget(activeModelIdx);
+        initWidget();
       };
       script.onerror = () => {
         console.error('Failed to load Live2D widget script.');
@@ -99,11 +78,12 @@ export const Live2DWidget: React.FC = () => {
     }
   };
 
-  const initWidget = (modelIdx: number) => {
+  const initWidget = () => {
     if (window.L2Dwidget) {
       window.L2Dwidget.init({
         model: {
-          jsonPath: MODELS[modelIdx].path,
+          // Koharu, the super cute chibi anime girl
+          jsonPath: 'https://cdn.jsdelivr.net/npm/live2d-widget-model-koharu@1.0.5/assets/koharu.model.json',
           scale: 1,
         },
         display: {
@@ -146,27 +126,13 @@ export const Live2DWidget: React.FC = () => {
   };
 
   const handleCanvasHover = () => {
-    setDialogText('哼哼，点我右边的工具栏，可以让我变装、聊天、拍照或者隐身哦！');
+    setDialogText('哼哼，点我右边的工具栏，可以让我陪您聊天、拍照或者隐身哦！');
     setShowDialog(true);
 
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       setShowDialog(false);
     }, 6000);
-  };
-
-  const handleSwitchModel = () => {
-    const nextIdx = (activeModelIdx + 1) % MODELS.length;
-    // Save selection in localStorage and reload page to prevent WebGL conflicts
-    localStorage.setItem('live2d-model-idx', nextIdx.toString());
-
-    setDialogText(`一键变装！正在为您唤醒新角色：${MODELS[nextIdx].name}...`);
-    setShowDialog(true);
-
-    if (timerRef.current) clearTimeout(timerRef.current);
-    setTimeout(() => {
-      window.location.reload();
-    }, 800);
   };
 
   const handleInteract = () => {
@@ -251,23 +217,6 @@ export const Live2DWidget: React.FC = () => {
       {/* Floating Vertical Toolbar right next to the character */}
       <div className="fixed bottom-12 left-[155px] z-50 flex flex-col gap-2 bg-white/80 backdrop-blur-md p-1.5 rounded-xl border border-slate-200/60 shadow-lg transition-all duration-300 animate-fade-in">
         
-        {/* Switch Character */}
-        <div className="relative">
-          <button
-            onClick={handleSwitchModel}
-            onMouseEnter={() => setHoveredBtn('switch')}
-            onMouseLeave={() => setHoveredBtn(null)}
-            className="p-2 hover:bg-indigo-50 text-indigo-600 hover:text-indigo-700 rounded-lg transition-colors cursor-pointer flex items-center justify-center"
-          >
-            <RefreshCw className="w-4.5 h-4.5" />
-          </button>
-          {hoveredBtn === 'switch' && (
-            <div className="absolute left-10 top-1.5 bg-slate-900 text-white text-[10px] px-2 py-1 rounded shadow-md whitespace-nowrap z-50 pointer-events-none">
-              一键变装/换人
-            </div>
-          )}
-        </div>
-
         {/* Interact / Talk */}
         <div className="relative">
           <button
