@@ -249,6 +249,50 @@ export default function App() {
                   <p className="text-xs text-slate-200/90 leading-relaxed font-sans text-justify">
                     {PROFILE.bio}
                   </p>
+
+                  {/* Research Intersections & Key Highlights */}
+                  <div className="space-y-3 pt-3 border-t border-white/10">
+                    <div className="space-y-1.5">
+                      <span className="text-[10px] text-swjtu-gold font-bold uppercase tracking-wider block font-mono">
+                        RESEARCH INTENT & COMPATIBILITY / 科研方向契合点
+                      </span>
+                      <div className="grid grid-cols-2 gap-2 text-[11px]">
+                        <div className="bg-white/5 border border-white/10 rounded-lg p-2 flex flex-col justify-between hover:bg-white/10 transition-colors">
+                          <span className="font-semibold text-white flex items-center gap-1">🚁 低空选址</span>
+                          <span className="text-[10px] text-slate-300 leading-tight mt-0.5">eVTOL起降选址与网络规划</span>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-lg p-2 flex flex-col justify-between hover:bg-white/10 transition-colors">
+                          <span className="font-semibold text-white flex items-center gap-1">👾 冲突校验</span>
+                          <span className="text-[10px] text-slate-300 leading-tight mt-0.5">Cesium 三维体素避障校验</span>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-lg p-2 flex flex-col justify-between hover:bg-white/10 transition-colors">
+                          <span className="font-semibold text-white flex items-center gap-1">⚙️ 交通流控</span>
+                          <span className="text-[10px] text-slate-300 leading-tight mt-0.5">随机网络流量仿真与管控</span>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-lg p-2 flex flex-col justify-between hover:bg-white/10 transition-colors">
+                          <span className="font-semibold text-white flex items-center gap-1">📊 算法求解</span>
+                          <span className="text-[10px] text-slate-300 leading-tight mt-0.5">运筹学、启发式与 Gurobi 求解</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <span className="text-[10px] text-swjtu-gold font-bold uppercase tracking-wider block font-mono">
+                        CORE STRENGTHS / 个人核心优势
+                      </span>
+                      <div className="flex flex-wrap gap-1.5 text-[10px]">
+                        <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                          ⭐ 课程均分 91.07 (班级前列)
+                        </span>
+                        <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full">
+                          ⭐ MathorCup 国一 (队长)
+                        </span>
+                        <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                          ⭐ 计算机设计大赛省一 (队长)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="relative pt-4 mt-4 border-t border-white/10 space-y-2">
