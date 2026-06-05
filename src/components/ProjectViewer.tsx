@@ -136,38 +136,54 @@ export const ProjectViewer: React.FC<ProjectViewerProps> = ({
             {/* Right panel: Digital stacks, charts summary and parameters */}
             <div className="lg:col-span-5 space-y-6">
               
-              {/* Visual mockup of the 3D GIS Radar Map inside page */}
-              <div className="bg-slate-900 rounded-xl p-5 text-white relative overflow-hidden min-h-[200px] flex flex-col justify-between shadow-inner">
-                {/* Grid background simulation */}
-                <div className="absolute inset-0 opacity-15" style={{
-                  backgroundImage: 'radial-gradient(circle, #4f46e5 1px, transparent 1px)',
-                  backgroundSize: '16px 16px'
-                }}></div>
-                
-                <div className="relative z-10 flex items-center justify-between text-[10px] font-mono text-indigo-300 uppercase tracking-widest border-b border-indigo-500/20 pb-2">
-                  <span>3D CESIUM GEOSPATIAL HUD</span>
-                  <span className="text-emerald-400">● LIVE DEPLOYED</span>
+              {/* Visual mockup or real demo video of the 3D GIS Radar Map */}
+              {project.id === 'project-lowair' ? (
+                <div className="bg-slate-950 rounded-xl overflow-hidden border border-indigo-500/30 shadow-lg relative aspect-video flex flex-col justify-between group">
+                  <video
+                    src="/materials/低空可视化平台演示视频.mp4"
+                    controls
+                    autoPlay
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 left-2 bg-slate-900/80 text-white text-[9px] font-mono px-2 py-0.5 rounded pointer-events-none z-10 border border-slate-700">
+                    实机运行演示视频
+                  </div>
                 </div>
-                
-                {/* Minimalist 3D Air corridor dynamic flight paths mock */}
-                <div className="relative h-28 flex items-center justify-center">
-                  <div className="absolute w-20 h-20 rounded-full border-2 border-dashed border-indigo-400/30 animate-spin"></div>
-                  <div className="absolute w-28 h-28 rounded-full border border-indigo-500/10"></div>
-                  {/* Interactive Corridor vector lines in pure css */}
-                  <div className="absolute h-[1px] w-4/5 bg-gradient-to-r from-transparent via-indigo-400 to-transparent transform -rotate-12"></div>
-                  <div className="absolute h-[1px] w-3/5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent transform rotate-45"></div>
-                  <div className="absolute w-2.5 h-2.5 bg-swjtu-red rounded-full left-1/4 animate-ping"></div>
-                  <div className="absolute w-2 h-2 bg-emerald-500 rounded-full right-1/3 animate-ping"></div>
-                  <span className="absolute text-[8px] font-mono text-slate-400 bottom-1">
-                    {project.title.includes('低空') ? '三维体素求交与冲突检验中' : '状态寻优与马尔可夫决策迭代中'}
-                  </span>
-                </div>
+              ) : (
+                <div className="bg-slate-900 rounded-xl p-5 text-white relative overflow-hidden min-h-[200px] flex flex-col justify-between shadow-inner">
+                  {/* Grid background simulation */}
+                  <div className="absolute inset-0 opacity-15" style={{
+                    backgroundImage: 'radial-gradient(circle, #4f46e5 1px, transparent 1px)',
+                    backgroundSize: '16px 16px'
+                  }}></div>
+                  
+                  <div className="relative z-10 flex items-center justify-between text-[10px] font-mono text-indigo-300 uppercase tracking-widest border-b border-indigo-500/20 pb-2">
+                    <span>3D CESIUM GEOSPATIAL HUD</span>
+                    <span className="text-emerald-400">● LIVE DEPLOYED</span>
+                  </div>
+                  
+                  {/* Minimalist 3D Air corridor dynamic flight paths mock */}
+                  <div className="relative h-28 flex items-center justify-center">
+                    <div className="absolute w-20 h-20 rounded-full border-2 border-dashed border-indigo-400/30 animate-spin"></div>
+                    <div className="absolute w-28 h-28 rounded-full border border-indigo-500/10"></div>
+                    {/* Interactive Corridor vector lines in pure css */}
+                    <div className="absolute h-[1px] w-4/5 bg-gradient-to-r from-transparent via-indigo-400 to-transparent transform -rotate-12"></div>
+                    <div className="absolute h-[1px] w-3/5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent transform rotate-45"></div>
+                    <div className="absolute w-2.5 h-2.5 bg-swjtu-red rounded-full left-1/4 animate-ping"></div>
+                    <div className="absolute w-2 h-2 bg-emerald-500 rounded-full right-1/3 animate-ping"></div>
+                    <span className="absolute text-[8px] font-mono text-slate-400 bottom-1">
+                      {project.title.includes('低空') ? '三维体素求交与冲突检验中' : '状态寻优与马尔可夫决策迭代中'}
+                    </span>
+                  </div>
 
-                <div className="relative z-10 flex items-center justify-between text-[9px] font-mono text-slate-400 pt-2 border-t border-indigo-500/20">
-                  <span>SCALE: 3D GRID / 体素</span>
-                  <span>STATUS: 200 OK</span>
+                  <div className="relative z-10 flex items-center justify-between text-[9px] font-mono text-slate-400 pt-2 border-t border-indigo-500/20">
+                    <span>SCALE: 3D GRID / 体素</span>
+                    <span>STATUS: 200 OK</span>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Numeric KPIs list */}
               <div className="grid grid-cols-3 gap-3">

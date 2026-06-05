@@ -24,7 +24,9 @@ import {
   MapPin,
   Clock,
   Menu,
-  ArrowLeft
+  ArrowLeft,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import { PROFILE, CERTIFICATES, PAPERS, PROJECTS, EXPERIENCES } from './data';
 import { CertificateViewer } from './components/CertificateViewer';
@@ -48,6 +50,9 @@ export default function App() {
 
   // Floating Toast Notification
   const [notification, setNotification] = useState<string | null>(null);
+
+  // Hero Video Muted state
+  const [heroMuted, setHeroMuted] = useState(true);
 
   const handleContactClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -194,55 +199,167 @@ export default function App() {
         {currentView === 'resume' && (
           <div className="space-y-10 animate-fade-in">
             
-            {/* Elegant Resume Header Block */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-swjtu-blue via-[#0c479e] to-slate-900 rounded-2xl p-6 md:p-8 text-white shadow-lg">
-              <div className="absolute inset-0 opacity-10 pointer-events-none">
-                <div className="absolute top-[-50%] left-[-20%] w-[80%] h-[200%] bg-white rounded-full transform rotate-12"></div>
-              </div>
-              
-              <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8">
-                {/* Real Suit Photo */}
-                <div className="shrink-0 relative">
-                  <div className="w-24 md:w-28 aspect-[3/4] rounded-xl overflow-hidden border-4 border-white/90 bg-slate-100 shadow-md">
-                    <img
-                      src={PROFILE.photoUrl}
-                      alt={PROFILE.name}
-                      className="w-full h-full object-cover object-top"
-                    />
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 bg-swjtu-red text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm shadow-xs border border-white">
-                    茅以升班
-                  </div>
+            {/* Elegant Resume Header Block & Interactive Video Showcase Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+              {/* Left Column: Profile Card */}
+              <div className="lg:col-span-5 relative overflow-hidden bg-gradient-to-br from-swjtu-blue via-[#0c479e] to-slate-900 rounded-2xl p-6 text-white shadow-lg flex flex-col justify-between">
+                <div className="absolute inset-0 opacity-10 pointer-events-none">
+                  <div className="absolute top-[-50%] left-[-20%] w-[80%] h-[200%] bg-white rounded-full transform rotate-12"></div>
                 </div>
-
-                <div className="flex-1 text-center md:text-left space-y-3">
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                      <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight font-sans">
-                        {PROFILE.name}
-                      </h2>
-                      <span className="bg-white/10 border border-white/20 text-slate-200 text-xs px-2.5 py-0.5 rounded-md font-mono">
-                        {PROFILE.englishName}
-                      </span>
-                      <span className="bg-swjtu-gold/90 text-slate-950 text-[10px] font-bold px-2.5 py-0.5 rounded-sm uppercase tracking-wider font-mono shadow-xs">
-                        {PROFILE.politicalStatus}
-                      </span>
+                
+                <div className="relative space-y-4">
+                  <div className="flex items-center gap-4">
+                    {/* Real Suit Photo */}
+                    <div className="shrink-0 relative">
+                      <div className="w-20 md:w-24 aspect-[3/4] rounded-xl overflow-hidden border-2 border-white/95 bg-slate-100 shadow-md">
+                        <img
+                          src={PROFILE.photoUrl}
+                          alt={PROFILE.name}
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 bg-swjtu-red text-white text-[8px] font-mono font-bold px-1.5 py-0.5 rounded-sm shadow-xs border border-white">
+                        茅以升班
+                      </div>
                     </div>
-                    
-                    <p className="text-sm text-slate-300 font-medium">
-                      {PROFILE.university} (211) • {PROFILE.college} • <span className="text-white font-semibold">{PROFILE.major}</span>
-                    </p>
+
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <h2 className="text-xl md:text-2xl font-extrabold tracking-tight font-sans">
+                          {PROFILE.name}
+                        </h2>
+                        <span className="bg-white/10 border border-white/20 text-slate-200 text-[10px] px-1.5 py-0.5 rounded font-mono">
+                          {PROFILE.englishName}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-300 font-medium">
+                        {PROFILE.university} (211)
+                      </p>
+                      <p className="text-xs text-slate-300">
+                        {PROFILE.college} • <span className="text-white font-semibold">{PROFILE.major}</span>
+                      </p>
+                      <div className="pt-1.5">
+                        <span className="bg-swjtu-gold/90 text-slate-950 text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider font-mono shadow-xs">
+                          {PROFILE.politicalStatus}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
-                  <p className="text-xs md:text-sm text-slate-100/90 leading-relaxed font-sans max-w-4xl text-justify">
+                  <p className="text-xs text-slate-200/90 leading-relaxed font-sans text-justify">
                     {PROFILE.bio}
                   </p>
+                </div>
 
-                  <div className="pt-2 border-t border-white/10 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs">
+                <div className="relative pt-4 mt-4 border-t border-white/10 space-y-2">
+                  <div className="flex items-center gap-2 text-xs">
                     <span className="text-swjtu-gold font-semibold">• 拟投研究生方向:</span>
-                    <span className="bg-white/5 px-2.5 py-0.5 rounded-sm border border-white/10 font-medium text-slate-200">
+                    <span className="bg-white/5 px-2 py-0.5 rounded border border-white/10 font-medium text-slate-200 text-[11px]">
                       {PROFILE.aimType}
                     </span>
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] text-slate-300/80 font-mono">
+                    <span>STATUS: ACTIVE RESEARCH</span>
+                    <span>LOC: CHENGDU, CN</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Immersive low-altitude platform simulation display console */}
+              <div className="lg:col-span-7 bg-slate-950 rounded-2xl p-4 border border-indigo-500/30 shadow-xl relative overflow-hidden flex flex-col justify-between group">
+                {/* Tech Glow background */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-2xl blur-md opacity-20 group-hover:opacity-35 transition duration-1000 -z-10 animate-tilt"></div>
+                
+                {/* HUD Top bar */}
+                <div className="flex items-center justify-between border-b border-indigo-500/20 pb-2 mb-3 z-10 relative">
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span className="text-[10px] font-mono text-indigo-300 font-bold uppercase tracking-wider">
+                      eVTOL Mission Control HUD // 3D Live Feed
+                    </span>
+                  </div>
+                  <span className="text-[9px] font-mono text-slate-500 bg-white/5 border border-white/10 px-2 py-0.5 rounded">
+                    CESIUM ENGINE 3.0
+                  </span>
+                </div>
+
+                {/* Video Area */}
+                <div className="relative aspect-video rounded-lg overflow-hidden border border-slate-800 bg-slate-900 group/video flex-1 min-h-[220px]">
+                  <video
+                    id="hero-video-player"
+                    src="/materials/低空可视化平台演示视频.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                  
+                  {/* Floating Overlay Info */}
+                  <div className="absolute top-3 left-3 bg-slate-950/80 text-white text-[9px] font-mono px-2 py-1 rounded border border-white/10 flex items-center space-x-1 pointer-events-none">
+                    <span>HD 1080P // STREAM FEED</span>
+                  </div>
+
+                  <div className="absolute bottom-3 left-3 bg-slate-950/80 text-white text-[9px] font-mono px-2 py-1 rounded border border-white/10 flex items-center space-x-1 pointer-events-none">
+                    <span className="text-emerald-400">● 维港低空航网冲突动态校验中</span>
+                  </div>
+
+                  {/* Audio Controls */}
+                  <button
+                    onClick={() => {
+                      const video = document.getElementById('hero-video-player') as HTMLVideoElement;
+                      if (video) {
+                        video.muted = !video.muted;
+                        setHeroMuted(video.muted);
+                      }
+                    }}
+                    className="absolute bottom-3 right-3 bg-slate-900/90 hover:bg-indigo-600 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-slate-700/80 transition-all flex items-center gap-1.5 shadow-md cursor-pointer z-20"
+                  >
+                    {heroMuted ? (
+                      <>
+                        <VolumeX className="w-3.5 h-3.5 text-rose-400" />
+                        <span>静音</span>
+                      </>
+                    ) : (
+                      <>
+                        <Volume2 className="w-3.5 h-3.5 text-emerald-400 animate-bounce" />
+                        <span>声音开</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Video description & quick acts */}
+                <div className="pt-3 border-t border-slate-800/80 mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 relative z-10">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[9px] font-bold px-2 py-0.5 rounded-sm">
+                        计算机设计大赛国赛
+                      </span>
+                      <h4 className="text-xs font-bold text-slate-200">
+                        三维空域网格化碰撞求交与体素安全检测引擎
+                      </h4>
+                    </div>
+                    <p className="text-[10px] text-slate-400 leading-relaxed text-justify max-w-xl">
+                      本视频实机演示系统：前端基于 Cesium.js 实现维港 3D 仿真环境，自研“灵格”三维体素碰撞校验算法，对 eVTOL 轨迹冲突和禁飞区微秒级求交检测。
+                    </p>
+                  </div>
+                  
+                  <div className="flex sm:flex-col gap-1.5 justify-end shrink-0">
+                    <button
+                      onClick={() => navigateTo('project', 'project-lowair')}
+                      className="flex-1 sm:flex-initial px-3 py-1.5 bg-swjtu-blue hover:bg-swjtu-blue-light text-white text-xs font-bold rounded-lg transition-transform hover:-translate-y-0.5 cursor-pointer text-center"
+                    >
+                      查看核心算法与模型
+                    </button>
+                    <a
+                      href="http://39.104.59.217/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 sm:flex-initial px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-lg border border-slate-700 transition-colors text-center"
+                    >
+                      访问在线平台 🌐
+                    </a>
                   </div>
                 </div>
               </div>
