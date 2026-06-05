@@ -5,14 +5,12 @@ import { Certificate } from '../types';
 interface CertificateViewerProps {
   certificate: Certificate;
   onClose?: () => void;
-  onNavigateToPaper?: (paperId: string) => void;
   onBack?: () => void;
 }
 
 export const CertificateViewer: React.FC<CertificateViewerProps> = ({
   certificate,
   onClose,
-  onNavigateToPaper,
   onBack
 }) => {
   return (
@@ -58,15 +56,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
             <span>证书复印件/原图已录入系统，支持与西南交大教工库进行防伪印章查核。</span>
           </p>
           <div className="flex flex-wrap gap-2 shrink-0">
-            {certificate.paperId && onNavigateToPaper && (
-              <button
-                onClick={() => onNavigateToPaper(certificate.paperId!)}
-                className="flex items-center space-x-1.5 px-3.5 py-2 bg-swjtu-blue hover:bg-swjtu-blue-light text-white text-xs font-semibold rounded-lg shadow-sm transition-all hover:shadow-xs cursor-pointer"
-              >
-                <FileText className="w-3.5 h-3.5" />
-                <span>查看学术报告/论文</span>
-              </button>
-            )}
+
             {certificate.realPdf && (
               <a
                 href={certificate.realPdf}

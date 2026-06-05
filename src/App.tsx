@@ -780,15 +780,6 @@ export default function App() {
           <CertificateViewer
             certificate={activeCert}
             onBack={() => navigateTo('resume')}
-            onNavigateToPaper={(id) => {
-              if (PAPERS.some(p => p.id === id)) {
-                navigateTo('paper', id);
-              } else if (PROJECTS.some(p => p.id === id)) {
-                navigateTo('project', id);
-              } else {
-                navigateTo('resume');
-              }
-            }}
           />
         )}        {/* ======================================= */}
         {/* ROUTER 5: EXPERIENCE DETAILED VIEW      */}
