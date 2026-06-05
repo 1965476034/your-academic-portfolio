@@ -31,6 +31,7 @@ import { CertificateViewer } from './components/CertificateViewer';
 import { PaperViewer } from './components/PaperViewer';
 import { ProjectViewer } from './components/ProjectViewer';
 import { ExperienceViewer } from './components/ExperienceViewer';
+import { Live2DWidget } from './components/Live2DWidget';
 import { Certificate, Paper, Project, Experience } from './types';
 
 export default function App() {
@@ -670,6 +671,8 @@ export default function App() {
           <span>{notification}</span>
         </div>
       )}
+
+      <Live2DWidget />
 
     </div>
   );
