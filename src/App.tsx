@@ -26,15 +26,16 @@ import {
   Menu,
   ArrowLeft
 } from 'lucide-react';
-import { PROFILE, CERTIFICATES, PAPERS, PROJECTS } from './data';
+import { PROFILE, CERTIFICATES, PAPERS, PROJECTS, EXPERIENCES } from './data';
 import { CertificateViewer } from './components/CertificateViewer';
 import { PaperViewer } from './components/PaperViewer';
 import { ProjectViewer } from './components/ProjectViewer';
-import { Certificate, Paper, Project } from './types';
+import { ExperienceViewer } from './components/ExperienceViewer';
+import { Certificate, Paper, Project, Experience } from './types';
 
 export default function App() {
-  // Routing: 'resume' | 'paper' | 'project' | 'certificate'
-  const [currentView, setCurrentView] = useState<'resume' | 'paper' | 'project' | 'certificate'>('resume');
+  // Routing: 'resume' | 'paper' | 'project' | 'certificate' | 'experience'
+  const [currentView, setCurrentView] = useState<'resume' | 'paper' | 'project' | 'certificate' | 'experience'>('resume');
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   // Search & Filter for Certificates on homepage
@@ -66,7 +67,7 @@ export default function App() {
   };
 
   // Custom navigation handler
-  const navigateTo = (view: 'resume' | 'paper' | 'project' | 'certificate', id: string | null = null) => {
+  const navigateTo = (view: 'resume' | 'paper' | 'project' | 'certificate' | 'experience', id: string | null = null) => {
     setCurrentView(view);
     setSelectedId(id);
     setMobileMenuOpen(false);
@@ -88,6 +89,7 @@ export default function App() {
   const activePaper = PAPERS.find(p => p.id === selectedId);
   const activeProject = PROJECTS.find(p => p.id === selectedId);
   const activeCert = CERTIFICATES.find(c => c.id === selectedId);
+  const activeExp = EXPERIENCES.find(e => e.id === selectedId);
 
   // Filtered certificates for home page listing
   const filteredCertificates = CERTIFICATES.filter(cert => {
@@ -529,6 +531,56 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* CV Section 4: Student Leadership & Practical Experience */}
+                <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4 shadow-xs">
+                  <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
+                    <h3 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                      <Briefcase className="w-5 h-5 text-emerald-600" />
+                      <span>学生工作与社团实践 ({EXPERIENCES.length})</span>
+                    </h3>
+                    <span className="text-[10px] text-slate-400 font-mono">点击查看详细工作履历</span>
+                  </div>
+
+                  <div className="divide-y divide-slate-100">
+                    {EXPERIENCES.map((exp) => (
+                      <div
+                        key={exp.id}
+                        onClick={() => navigateTo('experience', exp.id)}
+                        className="py-4 first:pt-0 last:pb-0 cursor-pointer group flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:px-2 hover:bg-slate-50/80 rounded-lg"
+                      >
+                        <div className="space-y-1.5 flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-[9px] font-bold px-2 py-0.5 rounded-sm bg-emerald-50 border border-emerald-100 text-emerald-700">
+                              {exp.role.includes('社长') ? '社团领袖' : '学生骨干'}
+                            </span>
+                            <span className="text-xs font-mono text-slate-400">{exp.duration}</span>
+                          </div>
+                          
+                          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                            <h4 className="text-sm font-bold text-slate-800 group-hover:text-swjtu-blue transition-colors">
+                              {exp.title}
+                            </h4>
+                            <span className="text-xs text-slate-500 font-medium">{exp.unit}</span>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                            <span className="text-xs text-swjtu-red font-bold bg-red-50 px-2 py-0.5 rounded-md border border-red-100">
+                              担任职务: {exp.role}
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed text-justify">
+                            {exp.summary}
+                          </p>
+                        </div>
+                        <div className="shrink-0 flex items-center space-x-1.5 text-xs text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                          <span>查看履历详情</span>
+                          <ChevronRight className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
               </div>
 
@@ -576,8 +628,15 @@ export default function App() {
               }
             }}
           />
+        )}        {/* ======================================= */}
+        {/* ROUTER 5: EXPERIENCE DETAILED VIEW      */}
+        {/* ======================================= */}
+        {currentView === 'experience' && activeExp && (
+          <ExperienceViewer
+            experience={activeExp}
+            onBack={() => navigateTo('resume')}
+          />
         )}
-
 
       </main>
 
