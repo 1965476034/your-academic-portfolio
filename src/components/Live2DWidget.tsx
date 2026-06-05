@@ -22,7 +22,7 @@ const DIALOG_QUOTES = [
   '哇！你点我了！再点一下会有什么呢~',
   '哼，不要随便碰人家的头啦，会变笨的~',
   '好无聊啊，我们去看看黄璨学长的“低空3D可视化系统”吧！',
-  '听说黄璨学长在茅以升班成绩前列，超级认真努力！',
+  '听说黄璨学长在制造设计大赛拿了省一等奖，超级厉害！',
   '您是蒋老师吗？学长经常提到您，说您的研究方向最酷了！(*^▽^*)',
   '今天也要元气满满鸭！(๑•̀ㅂ•́)و✧',
   '要看一下黄璨学长最新修编的精美学术报告吗？(◍´꒳`◍)',
@@ -39,14 +39,19 @@ export const Live2DWidget: React.FC = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // 1. Check if L2Dwidget is already loaded
-    if (window.L2Dwidget) {
-      initWidget(activeModelIdx);
-      return;
+    if (!isVisible) return;
+
+    // 1. Clean up any existing instances/globals/scripts to force a clean re-init
+    delete (window as any).L2Dwidget;
+    const oldScript = document.getElementById('live2d-script');
+    if (oldScript) {
+      oldScript.remove();
     }
+    removeWidgetDOM();
 
     // 2. Load script from CDN
     const script = document.createElement('script');
+    script.id = 'live2d-script';
     script.src = 'https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js';
     script.async = true;
     script.onload = () => {
@@ -59,7 +64,6 @@ export const Live2DWidget: React.FC = () => {
 
     // 3. Set a periodic timer to make it feel alive
     const interval = setInterval(() => {
-      if (!isVisible) return;
       const randomIdx = Math.floor(Math.random() * DIALOG_QUOTES.length);
       setDialogText(DIALOG_QUOTES[randomIdx]);
       setShowDialog(true);
@@ -73,8 +77,10 @@ export const Live2DWidget: React.FC = () => {
       clearInterval(interval);
       if (timerRef.current) clearTimeout(timerRef.current);
       removeWidgetDOM();
+      const s = document.getElementById('live2d-script');
+      if (s) s.remove();
     };
-  }, [isVisible]);
+  }, [isVisible, activeModelIdx]);
 
   const removeWidgetDOM = () => {
     const widgetContainer = document.getElementById('live2d-widget');
@@ -84,8 +90,6 @@ export const Live2DWidget: React.FC = () => {
   };
 
   const initWidget = (modelIdx: number) => {
-    if (!isVisible) return;
-    
     if (window.L2Dwidget) {
       window.L2Dwidget.init({
         model: {
@@ -132,7 +136,7 @@ export const Live2DWidget: React.FC = () => {
   };
 
   const handleCanvasHover = () => {
-    setDialogText('哼哼，点我左边的工具栏，可以让我变装、聊天、拍照或者隐身哦！');
+    setDialogText('哼哼，点我右边的工具栏，可以让我变装、聊天、拍照或者隐身哦！');
     setShowDialog(true);
 
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -143,9 +147,8 @@ export const Live2DWidget: React.FC = () => {
 
   const handleSwitchModel = () => {
     const nextIdx = (activeModelIdx + 1) % MODELS.length;
-    removeWidgetDOM();
+    // Updating index triggers the useEffect hook to completely reload and re-render the new model
     setActiveModelIdx(nextIdx);
-    initWidget(nextIdx);
 
     setDialogText(`一键变装！已为您唤醒新角色：${MODELS[nextIdx].name}。${MODELS[nextIdx].desc}`);
     setShowDialog(true);
@@ -229,7 +232,7 @@ export const Live2DWidget: React.FC = () => {
         }`}
       >
         <div className="absolute bottom-[-6px] left-8 w-3 h-3 bg-white border-r border-b border-slate-200/80 transform rotate-45"></div>
-        <p className="flex items-start gap-1">
+        <p className="flex items-start gap-1 font-sans">
           <Sparkles className="w-3.5 h-3.5 text-swjtu-gold shrink-0 mt-0.5" />
           <span>{dialogText}</span>
         </p>
